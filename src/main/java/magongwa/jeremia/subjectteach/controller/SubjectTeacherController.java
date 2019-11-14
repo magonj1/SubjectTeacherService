@@ -1,17 +1,29 @@
 package magongwa.jeremia.subjectteach.controller;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import magongwa.jeremia.subjectteach.model.SubjectTeacher;
 import magongwa.jeremia.subjectteach.service.SubjectTeacherService;
 
 
+@CrossOrigin(origins = {"http://localhost:4200"},maxAge = 4800, allowedHeaders = "*",allowCredentials = "false")
 @RestController
+@RequestMapping(path = "Api/SubjectTeacher")
 public class SubjectTeacherController {
 	
 	
@@ -19,57 +31,47 @@ public class SubjectTeacherController {
 	private SubjectTeacherService subjectTeacherService;
 	
 	
-	@RequestMapping("/create")
-	public String create( @RequestParam String subjectId, @RequestParam String teacherId, @RequestParam String groupId)
-	{
-		System.out.print("Creating");
-		SubjectTeacher subjectTeacher  = subjectTeacherService.create(subjectId,teacherId,groupId);
-		return subjectTeacher.toString();
-	}
-	@RequestMapping("/getAll")
-	public List<SubjectTeacher> SubjectTeacherAll()
-	{
-        //Added the get all features in the controller
-		return subjectTeacherService.getAll();
-	}
-	
-	@RequestMapping("/getTeacherId")
-	public SubjectTeacher getTeacher(@RequestParam String teacherId)
-	{
-	   
-		return subjectTeacherService.getByTeacherId(teacherId);
-	}
-	@RequestMapping("/getSubjectId")
-	public SubjectTeacher getSubject(@RequestParam String subjectId)
-	{
-	   
-		return subjectTeacherService.getBySubjectId(subjectId);
-	}
-	@RequestMapping("/getGroupId")
-	public SubjectTeacher getGroup(@RequestParam String groupId)
-	{
-	   
-		return subjectTeacherService.getByGroupId(groupId);
-	}
-	@RequestMapping("/updateSubjectTeacher")
-	public String update(@RequestParam String subjectId, @RequestParam String teacherId, @RequestParam String groupId)
-	{
-		SubjectTeacher subjectTeacher  = subjectTeacherService.update(subjectId, teacherId, groupId);
-	    return subjectTeacher.toString();
-	}
-	
-	@RequestMapping("/delete")
-	public String delete(@RequestParam String teacherId)
-	{
-		subjectTeacherService.delete(teacherId);
-		return "Deleted "+teacherId;
-	}
-	
-	@RequestMapping("/deleteAll")
-	public String deleteAll()
-	{
-		subjectTeacherService.deleteAll();
-		return "Deleted all the Records";
-	} 
+	@GetMapping
+    public ResponseEntity<List<SubjectTeacher>> findAll() {
+        return ResponseEntity.ok(subjectTeacherService.findAll());
+    }
+
+    @PostMapping
+    public ResponseEntity create(@Valid @RequestBody SubjectTeacher product) {
+        return ResponseEntity.ok(subjectTeacherService.save(product));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubjectTeacher> findById(@PathVariable String id) {
+        Optional<SubjectTeacher> subjectTeacher = subjectTeacherService.findById(id);
+        if (!subjectTeacher.isPresent()) {
+            
+            ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(subjectTeacher.get());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SubjectTeacher> update(@PathVariable String id, @Valid @RequestBody SubjectTeacher product) {
+        if (!subjectTeacherService.findById(id).isPresent()) {
+            
+            ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(subjectTeacherService.save(product));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable String id) {
+        if (!subjectTeacherService.findById(id).isPresent()) {
+          
+            ResponseEntity.badRequest().build();
+        }
+
+        subjectTeacherService.deleteById(id);
+
+        return ResponseEntity.ok().build();
+    }
 
 }

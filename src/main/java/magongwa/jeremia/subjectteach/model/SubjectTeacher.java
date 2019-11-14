@@ -8,7 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class SubjectTeacher {
 
 	@Id
-	private ObjectId subject_teacher_id;
+	private String subjectTeacherId;
+	
 	private String subjectId;
 	private String teacherId;
 	private String groupId;
@@ -20,11 +21,13 @@ public class SubjectTeacher {
 		this.teacherId = teacherId;
 		this.groupId = groupId;
 	}
-	public ObjectId getSubject_teacher_id() {
-		return subject_teacher_id;
+	
+	public String getSubjectTeacherId() {
+		return subjectTeacherId;
 	}
-	public void setSubject_teacher_id(ObjectId subject_teacher_id) {
-		this.subject_teacher_id = subject_teacher_id;
+
+	public void setSubjectTeacherId(String subjectTeacherId) {
+		this.subjectTeacherId = subjectTeacherId;
 	}
 	public String getSubjectId() {
 		return subjectId;
@@ -46,7 +49,7 @@ public class SubjectTeacher {
 	}
 	@Override
 	public String toString() {
-		return "SubjectTeacher [subject_teacher_id=" + subject_teacher_id + ", subjectId=" + subjectId + ", teacherIid="
+		return "SubjectTeacher [subject_teacher_id=" + subjectTeacherId + ", subjectId=" + subjectId + ", teacherIid="
 				+ teacherId + ", groupId=" + groupId + "]";
 	}
 	
